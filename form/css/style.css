@@ -1,0 +1,97 @@
+body {  
+    margin: 0;
+    background-color: #37404a;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+}
+
+h2 {
+    text-align: center;
+    color: #85ffc7;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+/* FORM */
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #fff;
+}
+
+fieldset {
+    border: none;
+    margin-top: 20px;
+}
+
+/* INPUTS */
+
+input, select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #fff;
+    padding: 5px 0;
+    color: #85ffc7;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-bottom: 2px solid #85ffc7;
+}
+
+/* SELECT */
+
+select {
+    border: 2px solid #fff;
+    padding: 8px;
+    margin-top: 5px;
+    background: #37404a;
+}
+
+/* CHECKBOX */
+
+.checkbox-group label {
+    display: block;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.checkbox-group input {
+    width: auto;
+    margin-right: 8px;
+}
+
+/* BOTÓN */
+
+button {
+    width: 100%;
+    margin-top: 25px;
+    height: 45px;
+    border: 2px solid #85ffc7;
+    background: transparent;
+    color: #85ffc7;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #85ffc7;
+    color: #37404a;
+}
+
+.section {
+    margin-top: 10px;
+}
