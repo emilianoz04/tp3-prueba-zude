@@ -10,7 +10,7 @@
 <div class="container">
     <h2>Registro a Evento Tecnológico</h2>
 
-    <form method="POST" action="../back/guardar.php">
+    <form method="POST" action="/back/guardar.php">
 
         <fieldset>
             <label>Nombre</label>

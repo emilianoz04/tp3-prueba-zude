@@ -1,7 +1,7 @@
 <?php
 ob_start(); // 🔹 Captura todos los echo
 
-$dataPath = __DIR__ . "/../Data/";
+$dataPath = __DIR__ . "/../consultas/data/";
 //recibe datos
 $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
@@ -255,7 +255,8 @@ a {
         <?= $detalles ?>
     </div>
 
-    <a href="../front/index.html">Volver</a>
+    <a href="../form/index.form.php">Volver</a>
+    <a href="../consultas/index-consultas.php">o consultar datos</a>
 </div>
 
 </body>

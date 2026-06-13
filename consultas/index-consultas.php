@@ -19,7 +19,7 @@
         <option value="red">Red social</option>
     </select>
 
-    <button type="submit">Buscar</button>
+    <button type="submit">Continuar</button>
 
 </form>
 
