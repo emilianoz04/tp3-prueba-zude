@@ -1,12 +1,44 @@
 <?php
-$dataPath = "../Data/";
 
-$tipo = $_POST['tipo'] ?? '';
+$dataPath = __DIR__ . "/data/";
+
+/* --------------------------
+   OBTENER TIPO DE BUSQUEDA
+---------------------------*/
+
+$tipo = '';
+
+if(isset($_POST['tipo']))
+{
+    $tipo = $_POST['tipo'];
+}
+elseif(isset($_GET['tipo']))
+{
+    $tipo = $_GET['tipo'];
+}
 
 if($tipo == '')
 {
     die("Debe seleccionar una opción para filtrar.");
 }
+
+/* --------------------------
+   DEFINIR ARCHIVO CATALOGO
+---------------------------*/
+
+if($tipo == "evento")
+{
+    $catalogo = "eventos.dat";
+}
+elseif($tipo == "puesto")
+{
+    $catalogo = "puestos-laborales.dat";
+}
+else
+{
+    $catalogo = "redes.dat";
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -18,39 +50,28 @@ if($tipo == '')
 
 <h2>Filtro de búsqueda</h2>
 
+<!-- FORMULARIO DE FILTRO -->
+
 <form method="GET">
 
-    <input type="hidden" name="tipo" value="<?= $tipo ?>">
+    <input type="hidden" name="tipo" value="<?php echo $tipo; ?>">
 
     <label>Seleccione opción:</label>
 
     <select name="valor" required>
-
         <option value="">Seleccionar</option>
 
         <?php
 
-        if($tipo == "evento")
+        if(file_exists($dataPath . $catalogo))
         {
-            $file = $dataPath."eventos.dat";
-        }
-        elseif($tipo == "puesto")
-        {
-            $file = $dataPath."puestos-laborales.dat";
-        }
-        else
-        {
-            $file = $dataPath."redes.dat";
-        }
-
-        if(file_exists($file))
-        {
-            $lines = file($file, FILE_IGNORE_NEW_LINES);
+            $lines = file($dataPath . $catalogo, FILE_IGNORE_NEW_LINES);
 
             foreach($lines as $line)
             {
-                list($id,$nombre) = explode("|",$line);
-                echo "<option value='$nombre'>$nombre</option>";
+                $datos = explode("|", $line);
+
+                echo "<option value='".$datos[1]."'>".$datos[1]."</option>";
             }
         }
 
@@ -63,7 +84,12 @@ if($tipo == '')
 </form>
 
 <hr>
+
 <?php
+
+/* --------------------------
+   PROCESAR FILTRO
+---------------------------*/
 
 if(isset($_GET['valor']))
 {
@@ -75,66 +101,109 @@ if(isset($_GET['valor']))
         exit;
     }
 
+    /* RELACION SEGUN TIPO */
+
     if($tipo == "evento")
+    {
         $relacion = "participante-evento.dat";
+    }
     elseif($tipo == "puesto")
+    {
         $relacion = "participante-puesto.dat";
+    }
     else
+    {
         $relacion = "participante-red.dat";
+    }
+
+    /* BUSCAR ID DEL VALOR */
 
     $idBuscado = null;
 
-    $catalogo = ($tipo == "evento") ? "eventos.dat" :
-                (($tipo == "puesto") ? "puestos-laborales.dat" : "redes.dat");
-
-    $lines = file($dataPath.$catalogo, FILE_IGNORE_NEW_LINES);
-
-    foreach($lines as $line)
+    if(file_exists($dataPath . $catalogo))
     {
-        list($id,$nombre) = explode("|",$line);
+        $lines = file($dataPath . $catalogo, FILE_IGNORE_NEW_LINES);
 
-        if($nombre == $valor)
+        foreach($lines as $line)
         {
-            $idBuscado = $id;
-            break;
+            $datos = explode("|", $line);
+
+            if($datos[1] == $valor)
+            {
+                $idBuscado = $datos[0];
+                break;
+            }
         }
     }
 
     if($idBuscado == null)
     {
-        die("Valor inválido");
+        die("Valor inválido.");
     }
+
+    /* BUSCAR PARTICIPANTES RELACIONADOS */
 
     $ids = [];
 
-    $lines = file($dataPath.$relacion, FILE_IGNORE_NEW_LINES);
-
-    foreach($lines as $line)
+    if(file_exists($dataPath . $relacion))
     {
-        list($idP,$idR) = explode("|",$line);
+        $lines = file($dataPath . $relacion, FILE_IGNORE_NEW_LINES);
 
-        if($idR == $idBuscado)
+        foreach($lines as $line)
         {
-            $ids[] = $idP;
+            $datos = explode("|", $line);
+
+            if($datos[1] == $idBuscado)
+            {
+                $ids[] = $datos[0];
+            }
         }
     }
 
-    echo "<h3>Total: ".count($ids)." participantes</h3>";
+    echo "<h3>Total encontrados: ".count($ids)." participantes</h3>";
 
-    $personas = file($dataPath."participantes.dat", FILE_IGNORE_NEW_LINES);
+    /* MOSTRAR PARTICIPANTES */
 
-    echo "<ul>";
-
-    foreach($personas as $p)
+    if(!file_exists($dataPath . "participantes.dat"))
     {
-        $d = explode("|",$p);
-
-        if(in_array($d[0], $ids))
-        {
-            echo "<li>{$d[1]} {$d[2]} - {$d[3]}</li>";
-        }
+        die("No hay participantes registrados.");
     }
 
-    echo "</ul>";
+    $personas = file($dataPath . "participantes.dat", FILE_IGNORE_NEW_LINES);
+
+    if(count($ids) == 0)
+    {
+        echo "<p>No se encontraron participantes.</p>";
+    }
+    else
+    {
+        echo "<ul>";
+
+        foreach($personas as $p)
+        {
+            $d = explode("|", $p);
+
+            if(in_array($d[0], $ids))
+            {
+                echo "<li>";
+                echo "Nombre: ".$d[1]." ".$d[2]." | ";
+                echo "Email: ".$d[3]." | ";
+                echo "Nacimiento: ".$d[4]." | ";
+                echo "Tel: ".$d[5]." | ";
+                echo "Sueldo: ".$d[6];
+                echo "</li>";
+            }
+        }
+
+        echo "</ul>";
+    }
 }
+
 ?>
+
+<br>
+
+<a href="index-consultas.php">Volver</a>
+
+</body>
+</html>
