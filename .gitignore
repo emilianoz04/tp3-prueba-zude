@@ -1,0 +1,14 @@
+# Docker
+*.log
+docker-compose.override.yml
+
+# Entorno
+.env
+
+# Archivos temporales
+*.tmp
+*.swp
+
+# Sistema
+.DS_Store
+Thumbs.db
